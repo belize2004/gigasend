@@ -55,7 +55,7 @@ export function FileUploader() {
         </Typography>
       </Typography>
       <Typography variant="body2">
-        Support JPG, PNG, SVG, and zip files, available for 7 days, up to 50GB
+        Support JPG, PNG, SVG, and zip files, available for 3 days, up to 50GB
       </Typography>
       <Box mt={4}>
         <Button variant="contained" color="primary" onClick={handleMenuOpen}>
