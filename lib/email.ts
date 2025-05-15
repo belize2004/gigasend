@@ -2,19 +2,16 @@ export function generateEmailTemplate({
   senderEmail,
   numberOfFiles,
   link,
-  name,
   message,
   fileSize
 }: {
   senderEmail: string;
   numberOfFiles: number;
   link: string;
-  name: string;
   message: string;
   fileSize: number
 }) {
   return `
-  <!DOCTYPE html>
   <html lang="en">
   <head>
       <meta charset="UTF-8">
@@ -82,7 +79,7 @@ export function generateEmailTemplate({
               display: flex;
               align-items: center;
               margin-bottom: 12px;
-              padding: 12px;
+              padding: 12px 20px;
               background-color: #f8f9fa;
               border-radius: 8px;
               transition: all 0.2s ease;
@@ -91,40 +88,26 @@ export function generateEmailTemplate({
               background-color: #f1f3f5;
           }
           .file-icon {
-              width: 40px;
-              height: 40px;
-              background-color: #e9ecef;
-              border-radius: 6px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
               margin-right: 15px;
               color: #0d6efd;
-              font-weight: bold;
-          }
-          .file-details {
-              flex-grow: 1;
-          }
-          .file-name {
-              font-weight: 600;
-              margin-bottom: 3px;
-              color: #333333;
           }
           .file-size {
-              font-size: 12px;
+              font-size: 14px;
               color: #777777;
+              margin-right: auto;
           }
           .download-button {
               background-color: #0d6efd;
               color: white;
               border: none;
-              padding: 8px 15px;
+              padding: 10px 20px;
               border-radius: 6px;
               font-weight: 600;
               cursor: pointer;
               text-decoration: none;
               font-size: 14px;
               transition: background-color 0.2s ease;
+              white-space: nowrap;
           }
           .download-button:hover {
               background-color: #0b5ed7;
@@ -137,6 +120,13 @@ export function generateEmailTemplate({
               border-left: 4px solid #ffc107;
               margin-top: 25px;
           }
+          .message-section {
+              margin-top: 20px;
+          }
+          .message-section h4 {
+              margin-bottom: 10px;
+              color: #333333;
+          }
           @media only screen and (max-width: 620px) {
               .email-container {
                   width: 100%;
@@ -146,17 +136,18 @@ export function generateEmailTemplate({
                   padding: 20px;
               }
               .file-item {
-                  flex-direction: column;
-                  align-items: flex-start;
+                  flex-wrap: wrap;
+                  gap: 10px;
               }
-              .file-icon {
-                  margin-bottom: 10px;
+              .file-size {
                   margin-right: 0;
+                  flex-basis: 100%;
+                  margin-left: 35px;
+                  margin-top: -5px;
               }
               .download-button {
+                  margin-left: auto;
                   margin-top: 10px;
-                  width: 100%;
-                  text-align: center;
               }
           }
       </style>
@@ -164,7 +155,7 @@ export function generateEmailTemplate({
   <body>
       <div class="email-container">
           <div class="email-header">
-              <img src="https://example.com/gigasend-logo.png" alt="GigaSend" class="logo">
+              <img src="https://www.gigasend.us/logo.png" alt="GigaSend" class="logo">
           </div>
           
           <div class="email-content">
@@ -179,28 +170,22 @@ export function generateEmailTemplate({
               </div>
               
               <div class="files-container">
-                  <div class="file-item" style="text-align: center; padding: 25px;">
-                      <div style="margin-bottom: 15px;">
-                          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M20 6H12L10 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V8C22 6.9 21.1 6 20 6ZM20 18H4V6H9.17L11.17 8H20V18ZM12 17L15 14H13V11H11V14H9L12 17Z" fill="#0d6efd"/>
-                          </svg>
+                  <div class="file-item">
+                      <div class="file-icon">
+                          <img src="https://res.cloudinary.com/dj3vgnj0u/image/upload/v1747313102/yfhlce4k1h0qkjfph3xk.png" alt="file" />
                       </div>
-                      <div class="file-details" style="margin-bottom: 20px;">
-                          <div class="file-name" style="font-size: 18px;">${name}</div>
-                          <div class="file-size">${fileSize}</div>
-                      </div>
-                      <a href="${link}" class="download-button" style="padding: 12px 25px; font-size: 16px;">Download Now</a>
+                      <div class="file-size">${formatBytes(fileSize)}</div>
+                      <a href="${link}" class="download-button" style="color:white;" target="_blank">Download</a>
                   </div>
               </div>
-              <h4>Message</h4>
-              <p>${message}</p>
               
-              <div class="expiry-notice">
-                  <strong>Note:</strong> These download links will expire in 7 days. Please download your files before then.
+              <div class="message-section">
+                  <h4>Message</h4>
+                  <p>${message}</p>
               </div>
               
               <div class="expiry-notice">
-                  <strong>Note:</strong> These download links will expire in 7 days. Please download your files before then.
+                  <strong>Note:</strong> These download links will expire in 3 days. Please download your files before then.
               </div>
           </div>
           
@@ -211,5 +196,16 @@ export function generateEmailTemplate({
       </div>
   </body>
   </html>
+  
   `
+}
+
+function formatBytes(bytes: number, decimals = 2) {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
