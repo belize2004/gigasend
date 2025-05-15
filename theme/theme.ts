@@ -122,32 +122,11 @@ const theme = createTheme({
           borderColor: "#E5E7EB",
           borderRadius: "8px",
           transition: "border 120ms ease-in",
-          variants: [
-            {
-              props: {
-                size: "small",
-              },
-              style: {
-                padding: "7px 11px",
-              },
-            },
-            {
-              props: {
-                size: "medium",
-              },
-              style: {
-                padding: "11px 11px",
-              },
-            },
-            {
-              props: {
-                size: "large",
-              },
-              style: {
-                padding: "14px 11px",
-              },
-            },
-          ],
+        },
+        sizeSmall: {
+          style: {
+            padding: "7px 11px",
+          },
         },
         notchedOutline: {
           border: "none",
@@ -198,21 +177,7 @@ const theme = createTheme({
                   color: "#AC83FE",
                 },
               },
-            },
-            {
-              props: { variant: "ghost" },
-              style: {
-                borderColor: "transparent",
-                backgroundColor: "transparent",
-                color: "#7530FE",
-                "&:hover": {
-                  color: "#5E26CB",
-                },
-                "&.Mui-disabled": {
-                  color: "#AC83FE",
-                },
-              },
-            },
+            }
           ],
         },
         sizeLarge: {

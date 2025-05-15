@@ -29,13 +29,6 @@ export async function POST(request: NextRequest) {
       downloadLinks.push(url);
     }
 
-    let linksHtml =
-      '<ul  style="list-style-type: none; padding: 0; margin: 20px 0;">';
-    fileKeys.forEach((key, index) => {
-      linksHtml += `<li><a href="${downloadLinks[index]}">${key}</a></li>`;
-    });
-    linksHtml += "</ul>";
-
     const htmlContent = generateEmailTemplate({
       fileSize,
       link: downloadLinks[0],

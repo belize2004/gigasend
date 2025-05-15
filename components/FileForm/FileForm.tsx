@@ -15,7 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import { FileUploader } from "../Upload/FileUploader";
-import { AdvancedParams } from "./AdvancedParams";
+// import { AdvancedParams } from "./AdvancedParams";
 import { TermsConditions } from "../TermsConditions";
 import FileList from "../File/FileList";
 import Image from "next/image";
@@ -27,10 +27,6 @@ import { useFileContext } from "@/context/FileContext";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { zipFiles } from "@/lib/zip";
-
-const downloadedCount = 1;
-const downloadedAmount = "200KB";
-const expiryDate = "4/20/2025";
 
 type UploadFormData = z.infer<typeof UploadFormSchema>;
 
