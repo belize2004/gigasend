@@ -156,6 +156,13 @@ export const FileForm = () => {
       showToast("Please select at least one file.");
       return;
     }
+
+    if (data.senderEmail === data.receiverEmail) {
+      showToast("Sender and receiver email cannot be the same.");
+      return;
+    }
+
+
     setUploading(true);
     setOverallProgress(0);
 
@@ -206,7 +213,7 @@ export const FileForm = () => {
   }, [files, setValue]);
 
   return (
-    <Card sx={{ maxWidth: "768px" }}>
+    <Card sx={{ maxWidth: "768px", maxHeight: '80vh', overflowY: 'auto' }}>
       <form
         onSubmit={handleSubmit(onSubmit)}
         style={{ display: "flex", flexDirection: "column", gap: 16 }}
@@ -223,7 +230,7 @@ export const FileForm = () => {
           </Stack>
 
           <Stack
-            direction="row"
+            direction={{ xs: "column", md: "row" }}
             sx={{
               padding: "24px",
               borderTop: "1px solid #D5D7DA",
@@ -232,7 +239,7 @@ export const FileForm = () => {
             gap={2}
             alignItems="stretch"
           >
-            <Stack gap={2} width={"50%"}>
+            <Stack gap={2} width={{ xs: "100%", md: "50%" }}>
               <Stack>
                 <Typography variant="body1">
                   {downloadedCount} Downloaded File
@@ -247,7 +254,7 @@ export const FileForm = () => {
               </Stack>
             </Stack>
 
-            <Stack gap={2} width={"50%"}>
+            <Stack gap={2} width={{ xs: "100%", md: "50%" }}>
               <Stack>
                 <Typography variant="body1">Email</Typography>
                 <Typography variant="body2">
@@ -305,7 +312,7 @@ export const FileForm = () => {
                   />
                 </FormControl>
 
-                <AdvancedParams />
+                {/* <AdvancedParams /> */}
               </Stack>
             </Stack>
           </Stack>
@@ -324,7 +331,7 @@ export const FileForm = () => {
               </Stack>
 
               <Stack direction="row" gap={2}>
-                <Button variant="outlined" type="button">
+                <Button onClick={() => router.replace('/')} variant="outlined" type="button">
                   Cancel
                 </Button>
                 <Button

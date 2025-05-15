@@ -12,7 +12,7 @@ export const FileList = () => {
   };
 
   return (
-    <Stack gap={2} sx={{ height: 220, overflowY: "auto" }}>
+    <Stack gap={2} sx={{ maxHeight: 220, overflowY: "auto" }}>
       {files.map((file) => (
         <FileDisplayItem
           key={crypto.randomUUID()}
