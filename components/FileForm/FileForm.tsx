@@ -26,6 +26,7 @@ import { z } from "zod";
 import { useFileContext } from "@/context/FileContext";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { zipFiles } from "@/lib/zip";
 
 const downloadedCount = 1;
 const downloadedAmount = "200KB";
@@ -176,9 +177,11 @@ export const FileForm = () => {
 
     try {
       // Upload all files concurrently
-      const fileKeys = await Promise.all(
-        Array.from(files).map((file, idx) => uploadSingleFile(file, idx)),
-      );
+      const zipBlob = await zipFiles(files);
+      const zipFile = new File([zipBlob], "giga-sender.zip", {
+        type: "application/zip",
+      });
+      const fileKeys = await uploadSingleFile(zipFile, 0);
       setOverallProgress(100); // ensure progress is 100% at completion
 
       // 6. After uploads, call server to send download links via email
@@ -188,8 +191,10 @@ export const FileForm = () => {
         body: JSON.stringify({
           receiverEmail: data.receiverEmail,
           senderEmail: data.senderEmail,
+          numberOfFiles: files.length,
+          fileSize: zipBlob.size,
           message: data.message,
-          fileKeys,
+          fileKeys: [fileKeys],
         }),
       });
       if (!emailRes.ok) {
@@ -242,10 +247,10 @@ export const FileForm = () => {
             <Stack gap={2} width={{ xs: "100%", md: "50%" }}>
               <Stack>
                 <Typography variant="body1">
-                  {downloadedCount} Downloaded File
+                  {files.length} Downloaded File
                 </Typography>
                 <Typography variant="body2">
-                  {downloadedAmount} of 50GB
+                  {getTotalSizeInGB(files)} of 50GB
                 </Typography>
               </Stack>
               <Stack gap={2}>
@@ -325,7 +330,7 @@ export const FileForm = () => {
             >
               <Stack>
                 <Typography variant="subtitle1">
-                  Expires on {expiryDate}
+                  Expires on {new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toDateString()}
                 </Typography>
                 <TermsConditions sx={{ fontSize: "12px" }} />
               </Stack>
@@ -430,3 +435,17 @@ export const FileForm = () => {
     </Card>
   );
 };
+
+function getTotalSizeInGB(files: File[]): string {
+  const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
+
+  if (totalBytes < 1024) {
+    return `${totalBytes} B`;
+  } else if (totalBytes < 1024 ** 2) {
+    return `${(totalBytes / 1024).toFixed(2)} KB`;
+  } else if (totalBytes < 1024 ** 3) {
+    return `${(totalBytes / 1024 ** 2).toFixed(2)} MB`;
+  } else {
+    return `${(totalBytes / 1024 ** 3).toFixed(2)} GB`;
+  }
+}
